@@ -15,8 +15,16 @@ public class Main{
             System.out.println(" 2- CADASTRO");
             System.out.println(" 3- SAIR");
             System.out.print(" opção: ");
-            int op = scanner.nextInt();
-        scanner.nextLine();
+            int op = 0;
+            try {
+                 op = scanner.nextInt();
+                scanner.nextLine(); // Limpa o buffer sempre após o nextInt
+            } catch (InputMismatchException e) {
+                    System.out.println("\nERRO: Digite apenas números de 1 a 3!");
+                     scanner.nextLine(); // Limpa o buffer do erro (importante!)
+                    continue; // Volta para o início do loop sem processar o switch
+         }
+
             switch(op){
                 case 1:
                     System.out.println("----TELA DE LOGIN ----");
@@ -28,11 +36,42 @@ public class Main{
                     Usuario userEncontrado = mapUsuario.get(cpfLogin);
 
                     if(userEncontrado != null && userEncontrado.getSenha().equals(senhaLogin)){
-                        System.out.println("\nLOGIN REALIZADO COM SUCESSO!");
+                        System.out.println("LOGIN REALIZADO COM SUCESSO!");
                          System.out.println("Bem-vindo(a), " + userEncontrado.getNome() + "!");
+                         System.out.println(" ");
+                         boolean logando = true;
+
+                                         //meunu internok;
+                        while(logando){
+
+                        System.out.println("-----------------------------------------------------------------");
+                        System.out.println(" ");
+                        System.out.println("AREA DO ALUNO ");
+                        System.out.println(" 1 - Ficha de treino | 2 - Ficha Técnica | 3 - Sair ");
+                        System.out.print(" opção: ");
+                        int opInterna = scanner.nextInt();
+                        scanner.nextLine();
+
+                        switch(opInterna){
+                            case 1:
+                                 System.out.println("exebindo  ficha de treino...");
+                                 System.out.println(" EM CONSTRUCAO...");
+                                 break;
+                            case 2:
+                                userEncontrado.gerenciarFichaTech(scanner);
+                                break;
+                            case 3:
+                                System.out.println("SAINDO...");
+                                logando = false;
+                                break;
+                            default:
+                                System.err.println("ERRO: Opção incorreta!");
+                         }
+                    }
+
                     }else{
                         System.out.println("ERRO: CPF ou Senha incorreto");
-                        System.out.println(" ");
+                        System.out.println(" ");      
                     }
                     break;
                 case 2:
@@ -49,6 +88,7 @@ public class Main{
                     }
                     break;
                 case 3: 
+                    System.out.println("SAINDO...");
                     rodando = false;
                     break;
                 default:
