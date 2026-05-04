@@ -19,7 +19,6 @@ public class Usuario {
         System.out.println("**************************************");
         System.out.print(" NOME COMPLETO: ");
         String nome = scanner.nextLine();
-        String cpf ="";
         String senhaLogin = "";
         
 

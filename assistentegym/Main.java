@@ -81,10 +81,14 @@ public class Main{
                         System.out.println("ERRO: O cpf informado ja esta ATIVO!");
                         System.out.println(" ");
                     }else{
+                        if(cpfInformado.length() == 11){
                         Usuario novoUsuario = Usuario.cadastroUsuario(scanner, cpfInformado);
                         mapUsuario.put(novoUsuario.getCpf(), novoUsuario);
                         System.out.println("NOVO USUARIO CADASTRADO COM SUCESSO");
                         System.out.println(" ");
+                        }else{
+                            System.out.println("ERRO: CPF invalido");
+                        }
                     }
                     break;
                 case 3: 
