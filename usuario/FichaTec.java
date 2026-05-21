@@ -6,13 +6,14 @@ public class FichaTec {
     private double peso;
     private double altura;
     private double bf;
-    
+    private String dataAvaliacao;
     
 
-    public FichaTec(Double peso, double altura, double bf){
+    public FichaTec(Double peso, double altura, double bf, String data){
         this.peso = peso;
         this.altura = altura;
         this.bf = bf;
+        this.dataAvaliacao = data;
     }
 
     public double calImc(){
@@ -35,7 +36,9 @@ public class FichaTec {
         System.out.print("% Gordura: ");
         double g = scanner.nextDouble();
         scanner.nextLine();
-        return new FichaTec(p, a, g);
+        System.out.print("Mês/Ano da avaliação (Ex: Mai/2026): ");
+        String dataAvaliacao = scanner.nextLine();
+        return new FichaTec(p, a, g, dataAvaliacao);
      }
 
      public void exibirFicha() {
@@ -44,6 +47,7 @@ public class FichaTec {
         System.out.printf("Gordura Corporal: %.2f%%\n", bf);
         double imcExibe = calImc();
         System.out.printf("IMC Atual: %.2f\n", imcExibe);
+        System.out.println("Data: " + dataAvaliacao);
         System.out.println("---------------------------------");
 
     }

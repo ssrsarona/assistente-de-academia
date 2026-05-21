@@ -1,5 +1,7 @@
 package assistentegym;
 import java.util.*;
+
+import usuario.FichaTec;
 import usuario.Usuario;
 import treino.FichaTreino;
 import treino.Exercicios;
@@ -9,6 +11,7 @@ public class Main {
     private static Scanner scanner = new Scanner(System.in);
     private static Map<String, Usuario> mapUsuario = new HashMap<>();
 
+    
     public static void main(String[] args) {
         // COLOCANDO O DONO (MASTER) DE FÁBRICA NO SISTEMA
         mapUsuario.put("08124297100", new Usuario("Dono da Academia", "08124297100", "admin123", "MASTER"));
@@ -19,15 +22,7 @@ public class Main {
             System.out.println(" 1- LOGIN");
             System.out.println(" 2- SAIR");
             System.out.print(" Opção: ");
-            int op = 0;
-            try {
-                op = scanner.nextInt();
-                scanner.nextLine(); 
-            } catch (InputMismatchException e) {
-                System.out.println("\nERRO: Digite apenas números!");
-                scanner.nextLine(); 
-                continue;
-            }
+            int op = lerNumeroSeguro();
 
             switch(op) {
                 case 1:
@@ -74,27 +69,83 @@ public class Main {
     // MENU DO MASTER (SÓ ELE CADASTRA O PERSONAL)
     // ==========================================
     private static void menuMaster() {
-        boolean logado = true;
-        while(logado) {
+        boolean logadoMaster = true;
+        while(logadoMaster) {
             System.out.println("\n=== PAINEL DO DONO (MASTER) ===");
-            System.out.println("1 - Cadastrar Personal/Professor");
-            System.out.println("2 - Deslogar");
+            System.out.println("1 - Cadastrar Novo Usuário (Personal ou Aluno)");
+            System.out.println("2 - Excluir Usuário");
+            System.out.println("3 - Análise de Faturamento 💰");
+            System.out.println("4 - Fazer Logout");
             System.out.print("Opção: ");
-            int op = scanner.nextInt();
-            scanner.nextLine();
-
-            if(op == 1) {
-                System.out.print("Digite o CPF do novo Personal: ");
-                String cpf = scanner.nextLine();
-                if (mapUsuario.containsKey(cpf)) {
-                    System.out.println("Erro: CPF já cadastrado.");
+            int opMaster = lerNumeroSeguro();
+            if (opMaster == 1) { 
+                System.out.print("Digite o CPF para o novo cadastro: ");
+                String cpfInformado = scanner.nextLine();
+                
+                if(mapUsuario.containsKey(cpfInformado)){
+                    System.out.println("ERRO: Este CPF já está cadastrado!");
                 } else {
-                    Usuario novoP = Usuario.cadastroUsuario(scanner, cpf, "PERSONAL");
-                    mapUsuario.put(cpf, novoP);
-                    System.out.println("✓ Personal Cadastrado com Sucesso!");
+                    if(cpfInformado.length() == 11 || cpfInformado.equals("000")){
+                        
+                        // Menu interno para o Master escolher o tipo de conta
+                        System.out.println("Qual o perfil do usuário?");
+                        System.out.println("1 - Personal / Professor");
+                        System.out.println("2 - Aluno");
+                        System.out.print("Escolha: ");
+                        int escolhaPerfil = lerNumeroSeguro();
+                        
+                        String perfilDefinido = (escolhaPerfil == 1) ? "PERSONAL" : "ALUNO";
+                        
+                        // Passando corretamente os 3 argumentos exigidos pelo método atualizado!
+                        Usuario novoUsuario = Usuario.cadastroUsuario(scanner, cpfInformado, perfilDefinido);
+                        mapUsuario.put(novoUsuario.getCpf(), novoUsuario);
+                        System.out.println("✓ " + perfilDefinido + " CADASTRADO COM SUCESSO!");
+                    } else {
+                        System.out.println("ERRO: CPF inválido. Deve conter 11 dígitos.");
+                    }
                 }
-            } else if (op == 2) {
-                logado = false;
+             } 
+            
+            else if (opMaster == 2) { 
+                System.out.print("Digite o CPF do usuário que deseja remover: ");
+                String cpfExcluir = scanner.nextLine();
+
+                if (mapUsuario.containsKey(cpfExcluir)) {
+                    Usuario user = mapUsuario.get(cpfExcluir);
+                    
+                    if (user.getPerfil().equals("MASTER")) {
+                        System.out.println("Erro: O administrador Master não pode ser excluído.");
+                    } else {
+                        System.out.print("Tem certeza que deseja remover " + user.getNome() + " (" + user.getPerfil() + ")? (S/N): ");
+                        String conf = scanner.nextLine();
+                        if (conf.equalsIgnoreCase("S")) {
+                            mapUsuario.remove(cpfExcluir);
+                            System.out.println("✓ Usuário removido com sucesso.");
+                        } else {
+                            System.out.println("Operação cancelada.");
+                        }
+                    }
+                } else {
+                    System.out.println("Erro: CPF não encontrado.");
+                }
+            } 
+            
+            else if (opMaster == 3) {
+                System.out.println("\n--- 📊 ANÁLISE DE FATURAMENTO ---");
+                int totalAlunos = 0;
+                for (Usuario u : mapUsuario.values()) {
+                    if (u.getPerfil().equals("ALUNO")) totalAlunos++;
+                }
+                System.out.println("Total de alunos matriculados ativos: " + totalAlunos); 
+                System.out.println("Faturamento Bruto Estimado: R$ " + (totalAlunos * 119.90));
+                System.out.println("---------------------------------");
+            } 
+            
+            else if (opMaster == 4) {
+                System.out.println("Saindo do painel Master...");
+                logadoMaster = false;
+            } else {
+                System.out.println("Opção inválida!");
             }
         }
     }
@@ -111,8 +162,8 @@ public class Main {
             System.out.println("3 - Cadastrar/Atualizar Ficha Técnica (Medidas) de um Aluno"); 
             System.out.println("4 - Deslogar");
             System.out.print("Opção: ");
-            int op = scanner.nextInt();
-            scanner.nextLine();
+            int op = lerNumeroSeguro();
+            
 
             switch(op) {
                 case 1:
@@ -123,7 +174,7 @@ public class Main {
                             System.out.println("Erro: CPF ativo.");
                         } else if (cpf.length() == 11) {
                             Usuario novoA = Usuario.cadastroUsuario(scanner, cpf, "ALUNO");
-                            mapUsuario.put(cpf, novoA);
+                            mapUsuario.put(novoA.getCpf(), novoA);
                             System.out.println("✓ Aluno Cadastrado com Sucesso!");
                         } else {
                             System.out.println("CPF Inválido.");
@@ -148,10 +199,9 @@ public class Main {
                                 if(nomeEx.equalsIgnoreCase("sair")) break;
 
                                 System.out.print("Séries: ");
-                                int s = scanner.nextInt();
+                                int s = lerNumeroSeguro();
                                 System.out.print("Repetições: ");
-                                int r = scanner.nextInt();
-                                scanner.nextLine();
+                                int r = lerNumeroSeguro();
                                 System.out.print("Carga/Peso: ");
                                 String c = scanner.nextLine();
 
@@ -172,8 +222,12 @@ public class Main {
                         Usuario aluno = mapUsuario.get(cpfAluno);
 
                         if (aluno != null && aluno.getPerfil().equals("ALUNO")) {
-                            // O Personal chama o método que roda o Scanner pedindo peso, altura, etc.
-                            aluno.gerenciarFichaTech(scanner); 
+                            // 1. O Scanner lê as novas medidas e cria um novo objeto FichaTec
+                            FichaTec novaFicha = FichaTec.cadastrarFicha(scanner);
+                            
+                            // 2. Adiciona esse objeto na lista de histórico do aluno
+                            aluno.adicionarNovaFichaTec(novaFicha);
+                            System.out.println("✓ Nova avaliação física adicionada ao histórico com sucesso!");
                         } else {
                             System.out.println("Erro: Aluno não encontrado.");
                         }
@@ -201,8 +255,8 @@ public class Main {
             System.out.println("2 - Ficha Técnica (Medidas/IMC)");
             System.out.println("3 - Sair");
             System.out.print("Opção: ");
-            int op = scanner.nextInt();
-            scanner.nextLine();
+            int op = lerNumeroSeguro();
+            
 
             switch(op) {
                 case 1:
@@ -220,12 +274,21 @@ public class Main {
                     }
                 case 2:
                     {
-                        if (alunoLogado.getFichaTec() == null) {
+                        if (alunoLogado.getHistoricoFichas().isEmpty()) {
                             System.out.println("Suas medidas ainda não foram cadastradas pelo Personal.");
-                        } else {
-                            alunoLogado.getFichaTec().exibirFicha(); // Apenas exibe as medidas, não deixa alterar!
-                        }
-                        break;
+                     } else {
+                            System.out.println("\n========= SEU HISTÓRICO DE EVOLUÇÃO =========");
+                            int avaliacaoNum = 1;
+                            
+                            // O loop passa por cada registro de peso/altura que o Personal salvou
+                            for (FichaTec ficha : alunoLogado.getHistoricoFichas()) {
+                                System.out.println("\n[ " + avaliacaoNum + "ª Avaliação Física ]");
+                                ficha.exibirFicha(); // Chama o método print que você já criou na FichaTec
+                                avaliacaoNum++;
+                            }
+                            System.out.println("=============================================");
+                    }
+                    break;
                     }
                 case 3:
                     {
@@ -234,6 +297,19 @@ public class Main {
                     }
                 default:
                     System.out.println("Opção incorreta!");
+            }
+        }
+    }
+    private static int lerNumeroSeguro() {
+        while (true) {
+            try {
+                int num = scanner.nextInt();
+                scanner.nextLine(); // Limpa o buffer se der certo
+                return num; // Retorna o número e sai do laço
+            } catch (InputMismatchException e) {
+                System.out.println("❌ Digite apenas números inteiros!");
+                scanner.nextLine(); // Limpa a sujeira do buffer
+                System.out.print("Tente novamente: ");
             }
         }
     }
