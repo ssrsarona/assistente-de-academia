@@ -7,7 +7,7 @@ public class Usuario {
     private String cpf;
     private String senhaLogin;
     private String perfil; // "MASTER", "PERSONAL" ou "ALUNO"
-    private FichaTec fichatec;
+    private List<FichaTec> historicoFichas;
     private List<FichaTreino> listaTreinos; // O treino do aluno fica salvo aqui
     
     // Construtor atualizado para receber o Perfil
@@ -16,6 +16,7 @@ public class Usuario {
         this.cpf = cpfInit;
         this.senhaLogin = senhaLoginInit;
         this.perfil = perfilInit;
+        this.historicoFichas = new ArrayList<>();
         this.listaTreinos = new ArrayList<>();
     } 
 
@@ -44,11 +45,14 @@ public class Usuario {
     public String getSenha() { return senhaLogin; }
     public String getPerfil() { return perfil; }
     
-    public FichaTec getFichaTec() { return fichatec; }
-    public void setFichaTec(FichaTec ficha){ this.fichatec = ficha; }
+    public List<FichaTec> getHistoricoFichas() {
+        return historicoFichas;
+    }
 
-    //public FichaTreino getFichaTreino() { return fichaTreino; }
-    //public void setFichaTreino(FichaTreino fichaTreino) { this.fichaTreino = fichaTreino; }
+    public void adicionarNovaFichaTec(FichaTec novaFicha) {
+        this.historicoFichas.add(novaFicha);
+    }
+
     public List<FichaTreino> getListaTreinos() { 
     return listaTreinos; 
     }
@@ -56,13 +60,21 @@ public class Usuario {
     public void adicionarNovoTreino(FichaTreino novoTreino) {
         this.listaTreinos.add(novoTreino); // Adiciona sem apagar os anteriores!
     }
-    
+
     public void gerenciarFichaTech(Scanner scanner){
-        if (this.fichatec == null){
-            this.fichatec = FichaTec.cadastrarFicha(scanner);
-            System.out.println("Ficha Cadastrada com Sucesso!");
+        if (this.historicoFichas.isEmpty()) {
+            System.out.println("Suas medidas ainda não foram cadastradas pelo Personal.");
         } else {
-            this.fichatec.exibirFicha();
+            System.out.println("\n========= SEU HISTÓRICO DE EVOLUÇÃO =========");
+            int avaliacaoNum = 1;
+            
+            // Loop que percorre cada avaliação inserida no histórico
+            for (FichaTec ficha : this.historicoFichas) {
+                System.out.println("\n[ " + avaliacaoNum + "ª Avaliação Física ]");
+                ficha.exibirFicha(); 
+                avaliacaoNum++;
+            }
+            System.out.println("=============================================");
         }
     }
 }
