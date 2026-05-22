@@ -78,24 +78,43 @@ public class Main {
             System.out.println("4 - Fazer Logout");
             System.out.print("Opção: ");
             int opMaster = lerNumeroSeguro();
-            if (opMaster == 1) { 
-                System.out.print("Digite o CPF para o novo cadastro: ");
-                String cpfInformado = scanner.nextLine();
-                
+            if (opMaster == 1) {
+                String cpfInformado = ""; 
+                while(true){
+                    System.out.print("Digite o CPF para o novo cadastro: ");
+                    cpfInformado = scanner.nextLine();
+                    if(cpfInformado.length() != 11){
+                        System.out.println("ERRO: o CPF deve conter 11 numeros!");
+                        System.out.println(" tente novamente!");
+                    } 
+                    else if(mapUsuario.containsKey(cpfInformado)){
+                        System.out.println("ERRO: CPF ja esta cadastrado");
+                        System.out.println("Tente Novamente: ");
+                    }
+                    else{
+                        break;
+                    }
+   
+                }
+            
                 if(mapUsuario.containsKey(cpfInformado)){
-                    System.out.println("ERRO: Este CPF já está cadastrado!");
-                } else {
-                    if(cpfInformado.length() == 11 || cpfInformado.equals("000")){
                         
+                     System.out.println("ERRO: Este CPF já está cadastrado!");
+                        System.out.println("Digite novamente:");
+                            
+                       
+                } else {
+                    if(cpfInformado.length() == 11 || cpfInformado.equals("08124297100")){
+                            
                         // Menu interno para o Master escolher o tipo de conta
                         System.out.println("Qual o perfil do usuário?");
                         System.out.println("1 - Personal / Professor");
                         System.out.println("2 - Aluno");
                         System.out.print("Escolha: ");
                         int escolhaPerfil = lerNumeroSeguro();
-                        
+                            
                         String perfilDefinido = (escolhaPerfil == 1) ? "PERSONAL" : "ALUNO";
-                        
+                            
                         // Passando corretamente os 3 argumentos exigidos pelo método atualizado!
                         Usuario novoUsuario = Usuario.cadastroUsuario(scanner, cpfInformado, perfilDefinido);
                         mapUsuario.put(novoUsuario.getCpf(), novoUsuario);
@@ -104,6 +123,7 @@ public class Main {
                         System.out.println("ERRO: CPF inválido. Deve conter 11 dígitos.");
                     }
                 }
+                
              } 
             
             else if (opMaster == 2) { 
