@@ -10,7 +10,8 @@ public class MenuMaster {
             System.out.println("1 - Cadastrar Novo Usuário (Personal ou Aluno)");
             System.out.println("2 - Excluir Usuário");
             System.out.println("3 - Análise de Faturamento 💰");
-            System.out.println("4 - Fazer Logout");
+            System.out.println("4 - Lista de Usuarios Cadastrados");
+            System.out.println("5 - Fazer Logout");
             System.out.print("Opção: ");
             int opMaster = lerNumeroSeguro(scanner);
             if (opMaster == 1) {
@@ -86,7 +87,7 @@ public class MenuMaster {
             } 
             
             else if (opMaster == 3) {
-                System.out.println("\n--- 📊 ANÁLISE DE FATURAMENTO ---");
+                System.out.println("\n---  ANÁLISE DE FATURAMENTO ---");
                 int totalAlunos = 0;
                 for (Usuario u : mapUsuario.values()) {
                     if (u.getPerfil().equals("ALUNO")) totalAlunos++;
@@ -95,8 +96,37 @@ public class MenuMaster {
                 System.out.println("Faturamento Bruto Estimado: R$ " + (totalAlunos * 119.90));
                 System.out.println("---------------------------------");
             } 
+            else if(opMaster == 4){
+                System.out.println("\n========== USÚARIOS CADASTRADOS ==========");
+                System.out.println("\n      PROFESSORES / PERSONAL");
+
+                boolean encontrouPersonal = false;
+
+                for(Usuario u : mapUsuario.values()){
+                    if(u.getPerfil().equals("PERSONAL")){
+                        System.out.println("# NOME: " + u.getNome() + " | CPF: " + u.getCpf());
+                        encontrouPersonal = true;
+                    }
+                }
+
+            if(!encontrouPersonal){ System.out.println("Nenhum Personal cadastrado!");}
+
+            System.out.println("\n========== ALUNOS MATRICULADOS ==========");
+
+                boolean encontrouAluno = false;
+
+                for(Usuario u : mapUsuario.values()){
+                    if(u.getPerfil().equals("ALUNO")){
+                        System.out.println("# NOME: " + u.getNome() + " | CPF: " + u.getCpf());
+                        encontrouAluno = true;
+                    }
+                }
+
+            if(!encontrouAluno){ System.out.println("Nenhum Aluno cadastrado!");}
+
+            }
             
-            else if (opMaster == 4) {
+            else if (opMaster == 5) {
                 System.out.println("Saindo do painel Master...");
                 logadoMaster = false;
             } else {
