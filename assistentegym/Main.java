@@ -74,7 +74,7 @@ public class Main {
                 scanner.nextLine(); // Limpa o buffer se der certo
                 return num; // Retorna o número e sai do laço
             } catch (InputMismatchException e) {
-                System.out.println("❌ Digite apenas números inteiros!");
+                System.out.println("Digite apenas números inteiros!");
                 scanner.nextLine(); // Limpa a sujeira do buffer
                 System.out.print("Tente novamente: ");
             }
